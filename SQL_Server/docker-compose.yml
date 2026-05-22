@@ -1,0 +1,35 @@
+services:
+  sqlserver:
+    # Descarga la imagen oficial de Microsoft (el "instalador" de SQL Server 2022)
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    
+    # El nombre que verás cuando hagas un 'docker ps'
+    container_name: mssql_server
+    
+    ports:
+      # [Puerto en tu Windows] : [Puerto dentro del Docker]
+      # El 1433 es el puerto estándar que usa SQL Server
+      - "1433:1433"
+      
+    environment:
+      # Obligatorio: Acepta los términos de licencia de Microsoft
+      - ACCEPT_EULA=Y
+      
+      # IMPORTANTE: El usuario por defecto siempre es 'sa' (System Administrator).
+      # La contraseña DEBE ser compleja, si ponés '1234' el contenedor fallará.
+      - MSSQL_SA_PASSWORD=Sql_Password_123!
+      
+      # Usa la versión 'Developer', que es gratuita y trae todas las funciones
+      - MSSQL_PID=Developer
+      
+    volumes:
+      # Guarda los datos en un volumen de Docker para que, si borrás el contenedor,
+      # tus tablas y bases de datos no se pierdan.
+      - sql_data:/var/opt/mssql
+      
+    # Si reiniciás la PC, el contenedor arranca solo
+    # restart: always
+
+volumes:
+  # Declaración del espacio de almacenamiento persistente
+  sql_data:
